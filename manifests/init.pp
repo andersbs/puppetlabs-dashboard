@@ -110,6 +110,7 @@ class dashboard (
   $dashboard_workers_config  = $dashboard::params::dashboard_workers_config,
   $dashboard_num_workers     = $dashboard::params::dashboard_num_workers,
   $dashboard_workers_start   = $dashboard::params::dashboard_workers_start,
+  $mysql                     = $dashboard::params::mysql,
   $mysql_root_pw             = $dashboard::params::mysql_root_pw,
   $passenger                 = $dashboard::params::passenger,
   $passenger_install         = $dashboard::params::passenger_install,
@@ -121,12 +122,14 @@ class dashboard (
   $rack_version              = $dashboard::params::rack_version
 ) inherits dashboard::params {
 
-  class { 'mysql::server':
-    root_password => $mysql_root_pw,
-  }
+  if $mysql {
+    class { 'mysql::server':
+      root_password => $mysql_root_pw,
+    }
 
-  class { 'mysql::bindings':
-    ruby_enable => true,
+    class { 'mysql::bindings':
+      ruby_enable => true,
+    }
   }
 
   if $passenger {
